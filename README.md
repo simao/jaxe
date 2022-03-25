@@ -71,8 +71,9 @@ The following DSL can be used with `-f/--filter` to filter lines. `.`
 can be used to refer to values nested in json objects.
 
 
-|                   Expression | Example                                            |
+|                       Syntax | Example                                            |
 |-----------------------------:|:--------------------------------------------------:|
+|                          `.` | `nested.key`                                       |
 | equals/not equals `==`, `!=` | `mykey0.otherkey == myvalue`                       |
 |           `and(exp)/or(exp)` | `and(http_status == 200, http_method != GET)`      |
 |                   `not(exp)` | `not(and(http_status == 200, http_method != GET))` |
