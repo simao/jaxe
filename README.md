@@ -86,6 +86,19 @@ can be used to refer to values nested in json objects.
 
 ## Install
 
-Binaries can be downloaded for the releases tab.
+### From source
+
+`cargo install --path .`
+
+
+### Downloaded Release
+
+Binaries can be downloaded for the releases tab: https://github.com/simao/jaxe/releases
+
+### AUR
+
+Use [jaxe-bin](https://aur.archlinux.org/packages/jaxe-bin). For example with `yay`:
+
+`yay -S jaxe-bin`
 
 
