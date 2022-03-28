@@ -1,6 +1,6 @@
 # Jaxe - The J[son] [Pick]axe
 
-jaxe parses [new line delimited json](http://ndjson.org/) on the stdin
+jaxe parses [new line delimited json](http://ndjson.org/) on stdin
 and outputs a color human readable string on stdout.
 
 jaxe supports basic filtering with a simple language. Certain json
