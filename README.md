@@ -7,7 +7,6 @@ jaxe supports basic filtering with a simple language. Certain json
 values can be omited or extracted. Invalid json can be displayed in a
 different color or omitted.
 
-
 ## Examples
 
 Considering the following newline delimited json log line:
@@ -83,6 +82,30 @@ can be used to refer to values nested in json objects.
 ## Configuration
 
 `JAXE_OMIT` and `JAXE_FILTER` can be set the same was as `-o/--omit` and `-f/--filter`.
+
+## Usage
+```
+jaxe 0.1.0
+A j[son] [pick]axe!
+
+USAGE:
+    jaxe [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help            Prints help information
+    -n, --no-colors       Disable colors
+    -j, --no-omit-json    Do not print non-json lines
+    -V, --version         Prints version information
+
+OPTIONS:
+    -e, --extract <extract>     Fields to extract, default to extracting all fields [default: []]
+    -f, --filter <filter>...    Filter by. See parse language
+    -l, --level <level>...      level keys. The first of these keys in the json line will be used as the level of the
+                                log line and formatted at the start of the line
+    -o, --omit <omit>           Fields to omit [default: []]
+    -t, --time <time>...        Time keys. The first of these keys in the json line will be used as the date of the log
+                                line and formatted after the level
+```
 
 ## Install
 
