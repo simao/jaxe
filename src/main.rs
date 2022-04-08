@@ -7,8 +7,10 @@ use structopt::StructOpt;
 
 mod parser;
 mod cli;
+mod filters;
 
 use cli::*;
+use filters::Filter;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "jaxe", about = "A j[son] [pick]axe!")]
@@ -28,6 +30,11 @@ pub(crate) struct Opt {
     /// Filter by. See parse language
     #[structopt(short = "f", long)]
     filter: Vec<String>,
+
+    /// Use jq filters
+    #[cfg(feature = "jq")]
+    #[structopt(long)]
+    jq: bool,
 
     /// level keys. The first of these keys in the json line will be used as the level of the log line and formatted at the start of the line.
     #[structopt(short, long)]
@@ -53,21 +60,11 @@ fn level_to_color(level: &str) -> Color {
     }
 }
 
-fn run_filters(filters: &Vec<String>, line: &Value) -> Result<bool> {
-    for filter in filters.iter() {
-        let res = parser::filter(&filter, line)?;
 
-        if ! res {
-            log::debug!("Line ignored, it does not match filter {}", filter);
-            return Ok(false)
-        }
-    }
 
-    Ok(true)
-}
 
-fn write_formatted_line(opts: &Opt, line: Value, output: &termcolor::BufferWriter) -> Result<()> {
-    if ! run_filters(&opts.filter, &line)? {
+fn write_formatted_line(opts: &Opt, line: Value, filters: &mut filters::Filters, output: &termcolor::BufferWriter) -> Result<()> {
+    if ! filters.apply(&line)? {
         return Ok(())
     }
 
@@ -104,6 +101,7 @@ fn write_formatted_line(opts: &Opt, line: Value, output: &termcolor::BufferWrite
     let mut keys: Vec<&String> = json.keys().collect();
     keys.sort();
 
+    // TODO: Extract should also support jq style expressions
     for key in keys {
         if ! opts.extract.0.is_empty() && ! opts.extract.0.contains(key) {
             log::debug!("Not writing key {} due to --extract", key);
@@ -172,6 +170,8 @@ fn main() -> io::Result<()> {
         BufferWriter::stdout(ColorChoice::Auto)
     };
 
+    let mut filters = filters::Filters::from_opts(&opts);
+
     loop {
         match handle.read_line(&mut line_buffer) {
             Err(_) | Ok(0) => {
@@ -184,7 +184,7 @@ fn main() -> io::Result<()> {
 
         match serde_json::from_str(&line_buffer) {
             Ok(json) =>
-                write_formatted_line(&opts, json, &bufwtr).unwrap(),
+                write_formatted_line(&opts, json, &mut filters, &bufwtr).unwrap(),
             Err(err) => {
                 log::debug!("Could not parse line as json: {:?}", err);
 

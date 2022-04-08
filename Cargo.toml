@@ -15,3 +15,8 @@ termcolor = "1.1"
 nom = "7.1.0"
 anyhow = "1"
 nom_locate = "4.0.0"
+jq-rs = { version = "0.4.1", features = ["bundled"], optional = true}
+
+[features]
+default = []
+jq = ["dep:jq-rs"]

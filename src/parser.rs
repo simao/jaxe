@@ -93,7 +93,7 @@ fn contains(input: Span) -> IResult<Span, Exp> {
     Ok((input, Exp::Contains(path, val.into())))
 }
 
-pub fn parse(input: &str) -> Result<Exp> {
+pub (crate) fn parse(input: &str) -> Result<Exp> {
     let input = Span::new(input);
     let (rest, op) = exp(input).map_err(|err| anyhow!("Could not parse filter: {}", err))?;
 
@@ -104,9 +104,8 @@ pub fn parse(input: &str) -> Result<Exp> {
     Ok(op)
 }
 
-pub fn filter(input: &str, target: &Value) -> Result<bool> {
-    let exp = parse(input)?;
-    let evalued = eval(&exp, target);
+pub (crate) fn filter(exp: &Exp, target: &Value) -> Result<bool> {
+    let evalued = eval(exp, target);
     let as_bool = evalued.as_bool().unwrap_or(false);
     Ok(as_bool)
 }
