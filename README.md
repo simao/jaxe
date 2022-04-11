@@ -83,6 +83,17 @@ can be used to refer to values nested in json objects.
 
 `JAXE_OMIT` and `JAXE_FILTER` can be set the same was as `-o/--omit` and `-f/--filter`.
 
+## JQ Support
+
+`jaxe` has experimental `jq` expressions support. If compiled with
+`--features jq`, and the cli flag `--jq` is used, `--filter` will
+accept jq expressions to be used as filters, for example:
+
+```
+$ cat example.log | jaxe --jq --filter '.http_status == "204"'
+I|2022-03-24T08:56:20.576Z|http_method=PUT http_path=/api/v1/user http_service_name=reposerver http_status=204 http_stime=43 logger=c.a.l.h.logging.RequestLoggingActor msg=http request
+```
+
 ## Usage
 ```
 jaxe 0.1.0
